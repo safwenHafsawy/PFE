@@ -8,6 +8,8 @@ DROP SEQUENCE admin_id_seq;
 
 DROP SEQUENCE line_item_id_seq;
 
+DROP SEQUENCE customer_store_visites_id_seq;
+
 DROP SEQUENCE order_id_seq;
 
 DROP SEQUENCE customer_activity_id_seq;
@@ -36,6 +38,8 @@ DROP SEQUENCE conv_id;
 
 DROP SEQUENCE message_id;
 
+DROP SEQUENCE delivery_id_seq;
+
 /**
  * -------------- Tables Dropping ----------------
  */
@@ -60,11 +64,15 @@ DROP TABLE order_items;
 
 DROP TABLE orders;
 
+DROP TABLE order_type;
+
 DROP TABLE delivery_type;
 
 DROP TABLE variant_stock;
 
 DROP TABLE reviews;
+
+DROP TABLE customer_store_visites;
 
 DROP TABLE customer_activity;
 

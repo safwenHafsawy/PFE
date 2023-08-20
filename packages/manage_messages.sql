@@ -1,55 +1,3 @@
-create or replace package "MANAGE_MESSAGES" as
-
-/*
- * 
- * ADMIN SUPPORT CONVERSATIONS 
- *.
- */
-
-----------------------------------------------------------------------------
--- Procedure: Create Support Conversation (W/ Administration)
-----------------------------------------------------------------------------
-PROCEDURE send_issue_to_admin (
-    p_customer_id IN NUMBER,
-    p_topic IN NUMBER,
-    p_content IN VARCHAR2,
-    p_issue_number OUT NUMBER
-);
-
-/*
- * 
- * CUSTOMER TO CUSTOMER CONVERSATIONS 
- *.
- */
-
-----------------------------------------------------------------------------
--- Function: Get or Create Conversation
-----------------------------------------------------------------------------
-
-FUNCTION get_or_create_conversation(
-    p_participant_1_id IN NUMBER,
-    p_participant_2_id IN NUMBER
-) RETURN NUMBER;
-
-
-----------------------------------------------------------------------------
--- Procedure: Send New Message
-----------------------------------------------------------------------------
-
-PROCEDURE send_message(
-    p_participant_1_id IN NUMBER,
-    p_participant_2_id IN NUMBER,
-    p_sender_id IN NUMBER,
-    p_message IN VARCHAR2,
-    p_current_date OUT TIMESTAMP,
-    p_sender_name OUT VARCHAR2
-);
-
-
-end "MANAGE_MESSAGES";
-/
-
-
 create or replace PACKAGE BODY "MANAGE_MESSAGES" AS
 
 /*
@@ -68,8 +16,8 @@ PROCEDURE send_issue_to_admin (
     p_issue_number OUT NUMBER
 ) IS
 BEGIN
-    INSERT INTO issue_records 
-        VALUES (issue_records_id.NEXTVAL, p_customer_id, p_topic, p_content)
+    INSERT INTO issue_records (customer_id, topic_id, content)
+        VALUES ( p_customer_id, p_topic, p_content)
         RETURNING issue_record_id INTO p_issue_number;
 END send_issue_to_admin;
 
@@ -99,8 +47,8 @@ BEGIN
        OR (participant_2_id = p_participant_1_id AND participant_1_id = p_participant_2_id);
 
     IF l_conv_exists = 0 THEN 
-        INSERT INTO conversations (conversation_id, participant_1_id, participant_2_id)
-        VALUES (conv_id.nextVAL, p_participant_1_id, p_participant_2_id)
+        INSERT INTO conversations (participant_1_id, participant_2_id)
+        VALUES (p_participant_1_id, p_participant_2_id)
         RETURNING conversation_id INTO l_new_conv_id;
     ELSE 
         SELECT conversation_id
@@ -129,9 +77,8 @@ PROCEDURE send_message (
 BEGIN
     l_conv_id := get_or_create_conversation(p_participant_1_id, p_participant_2_id);
 
-    INSERT INTO messages 
+    INSERT INTO messages (conversation_id, message_content, message_sender_id, sent_at, status)
         VALUES (
-            message_id.nextVAL, 
             l_conv_id,
             p_message,
             p_sender_id,

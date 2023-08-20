@@ -7,6 +7,10 @@
 
 insert into admins values (admin_id_seq.nextVAL, 'pfe94053@gmail.com', 'rihab2023', 'Administrator');
 
+-- Order Type Data Insertion 
+INSERT INTO order_type VALUES (1, 'Individual');
+INSERT INTO order_type VALUES (2, 'Composite');
+
 -- states Data Insertion
 
 -- Tunis
@@ -145,28 +149,28 @@ insert into CUSTOMER_TYPE values (2,'Buyer');
 -- Customer Account Data Insertion
 
 -- Customer 1
-INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password)
-VALUES (customer_id_seq.NEXTVAL, 1, 'Ahmed', 'Ben Salah', '1234567890', 'ahmed@example.com', '123 Main Street', 1, 'password123');
+INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password, salt)
+VALUES (customer_id_seq.NEXTVAL, 1, 'Ahmed', 'Ben Salah', '1234567890', 'ahmed@example.com', '123 Main Street', 1, DBMS_OBFUSCATION_TOOLKIT.MD5(input_string => UPPER('ahmed@example.com') || 'VUOQOSTLHCKIPIADIZTD' || UPPER('12345')), 'VUOQOSTLHCKIPIADIZTD');
 
 -- Customer 2
-INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password)
-VALUES (customer_id_seq.NEXTVAL, 2, 'Fatima', 'Chaabane', '9876543210', 'fatima@example.com', '456 Elm Street', 2, 'pass123');
+INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password, salt)
+VALUES (customer_id_seq.NEXTVAL, 2, 'Fatima', 'Chaabane', '9876543210', 'fatima@example.com', '456 Elm Street', 2, DBMS_OBFUSCATION_TOOLKIT.MD5(input_string => UPPER('fatima@example.com') || 'VUOQOSTLHCKIPIADIZTD' || UPPER('12345')), 'VUOQOSTLHCKIPIADIZTD');
 
 -- Customer 3
-INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password)
-VALUES (customer_id_seq.NEXTVAL, 1, 'Mohamed', 'Hammami', '1231231234', 'mohamed@example.com', '789 Oak Street', 3, 'abc123');
+INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password, salt)
+VALUES (customer_id_seq.NEXTVAL, 1, 'Mohamed', 'Hammami', '1231231234', 'mohamed@example.com', '789 Oak Street', 3, DBMS_OBFUSCATION_TOOLKIT.MD5(input_string => UPPER('mohamed@example.com') || 'VUOQOSTLHCKIPIADIZTD' || UPPER('12345')), 'VUOQOSTLHCKIPIADIZTD');
 
 -- Customer 4
-INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password)
-VALUES (customer_id_seq.NEXTVAL, 2, 'Amina', 'Gharbi', '9879879876', 'amina@example.com', '321 Pine Street', 10, 'xyz456');
+INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password, salt)
+VALUES (customer_id_seq.NEXTVAL, 2, 'Amina', 'Gharbi', '9879879876', 'amina@example.com', '321 Pine Street', 10, DBMS_OBFUSCATION_TOOLKIT.MD5(input_string => UPPER('amina@example.com') || 'VUOQOSTLHCKIPIADIZTD' || UPPER('12345')), 'VUOQOSTLHCKIPIADIZTD');
 
 -- Customer 5
-INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password)
-VALUES (customer_id_seq.NEXTVAL, 1, 'safwen', 'hafsawy', '51303002', 'saf@example.com', '321 Pine Street', 4, 'xyz456');
+INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password, salt)
+VALUES (customer_id_seq.NEXTVAL, 1, 'safwen', 'hafsawy', '51303002', 'saf@example.com', '321 Pine Street', 4, DBMS_OBFUSCATION_TOOLKIT.MD5(input_string => UPPER('saf@example.com') || 'VUOQOSTLHCKIPIADIZTD' || UPPER('12345')), 'VUOQOSTLHCKIPIADIZTD');
 
 -- Customer 6
-INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password)
-VALUES (customer_id_seq.NEXTVAL, 1, 'rihab', 'ben ali', '54891238', 'rihab@example.com', '321 Pine Street', 16, 'xyz456');
+INSERT INTO customer (customer_id, cus_type_id, firstName, lastName, phone, email, address, city_id, password, salt)
+VALUES (customer_id_seq.NEXTVAL, 1, 'rihab', 'ben ali', '54891238', 'rihab@example.com', '321 Pine Street', 16, DBMS_OBFUSCATION_TOOLKIT.MD5(input_string => UPPER('rihab@example.com') || 'VUOQOSTLHCKIPIADIZTD' || UPPER('12345')), 'VUOQOSTLHCKIPIADIZTD');
 
 -- Categories Data Insertion
 

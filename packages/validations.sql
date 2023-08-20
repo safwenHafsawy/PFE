@@ -1,96 +1,95 @@
-create or replace package "VALIDATIONS" as
+create or replace PACKAGE BODY VALIDATIONS AS
 
-FUNCTION validate_email(
-    p_email IN VARCHAR2
-) RETURN BOOLEAN;
+    -- Function to validate if the given email is in a valid format
+    FUNCTION validate_email(p_email IN VARCHAR2) RETURN VARCHAR2 IS
+        l_email_exists number;
+        l_error_messge varchar2(250 char);
+    BEGIN
 
-procedure validate_name(
-    p_name IN varchar2,
-    p_is_valid out boolean
-);
+        -- Check email existance
+        SELECT COUNT(email)
+        INTO l_email_exists
+        FROM customer
+        WHERE email = p_email;
 
-procedure validate_phone(
-    p_phone IN varchar2,
-    p_is_valid out boolean
-);
+        IF NOT regexp_like(p_email, '^[A-Za-z]+[A-Za-z0-9.]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$') THEN
+            l_error_messge := 'Invalid Email !';
+        ELSIF l_email_exists > 0 THEN 
+            l_error_messge := 'Email Already Exists !';
+        END IF;
 
-function confirm_password(
-    p_confirm_password in varchar2,
-    p_password in varchar2
-)
-return boolean;
+        RETURN l_error_messge;
+    END validate_email;
 
-FUNCTION validate_discount (p_discount IN NUMBER) RETURN BOOLEAN;
+    -- Procedure to validate if the given name is valid
+    PROCEDURE validate_name(p_name IN VARCHAR2, p_is_valid OUT BOOLEAN) IS
+    BEGIN
+        p_is_valid := FALSE;
+        IF p_name IS NULL THEN 
+            RETURN;
+        END IF;
 
-end "VALIDATIONS";
-/
+        IF REGEXP_LIKE(p_name, '^[a-zA-Z\s]+$') THEN
+            p_is_valid := TRUE;
+        END IF;
+    END validate_name;
 
+    -- Function to validate if the given phone number is valid
+    FUNCTION validate_phone(p_phone IN VARCHAR2) RETURN VARCHAR2 IS
+        l_phone_exists number;
+        l_error_messge varchar2(250 char);
+    BEGIN
 
-create or replace package body "VALIDATIONS" as
+        -- Check phone number existance
+        SELECT COUNT(phone)
+        INTO l_phone_exists
+        FROM customer
+        WHERE  phone = p_phone;
 
-FUNCTION validate_email(
-    p_email IN VARCHAR2
-) RETURN BOOLEAN IS
-    l_is_valid BOOLEAN := FALSE;
-BEGIN
-    IF regexp_like(p_email, '^[A-Za-z]+[A-Za-z0-9.]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$') THEN
-        l_is_valid := TRUE ;
-    END IF;
+        IF NOT regexp_like(p_phone, '^[0-9+\s]+$') THEN
+            l_error_messge := 'Invalid Phone Number !';
+        ELSIF l_phone_exists > 0 THEN 
+            l_error_messge := 'Phone Number Already Exists !';
+        END IF;
 
-    RETURN l_is_valid;
-END validate_email;
+        RETURN l_error_messge;
+    END validate_phone;
 
-procedure validate_name(
-    p_name IN varchar2,
-    p_is_valid out boolean
-)
-Is 
-BEGIN
-    p_is_valid := FALSE;
-    if p_name is null then 
-        return;
-    end if;
+    -- Function to confirm if the provided password matches the confirmed password
+    FUNCTION confirm_password(p_confirm_password IN VARCHAR2, p_password IN VARCHAR2) RETURN BOOLEAN IS
+    BEGIN 
+        IF p_password = p_confirm_password THEN 
+            RETURN TRUE;
+        ELSE
+            RETURN FALSE;
+        END IF;
+    END confirm_password;
 
-    IF REGEXP_LIKE(p_name, '^[a-zA-Z\s]+$') THEN
-        p_is_valid := TRUE;
-    end if;
-end validate_name;
+    -- Function to validate if the given discount value is valid
+    FUNCTION validate_discount(p_discount IN NUMBER) RETURN BOOLEAN IS
+    BEGIN
+        RETURN p_discount BETWEEN 0 AND 80;
+    END;
 
-procedure validate_phone(
-    p_phone IN varchar2,
-    p_is_valid out boolean
-)
-is 
-begin
-    p_is_valid := false;
-    if p_phone is null then 
-        return;
-    end if;
-    if regexp_like(p_phone,'^[0-9+\s]+$')then
-        p_is_valid := true;
-    end if;
-end validate_phone;
+    -- Function to validate if passwords are identical
+    FUNCTION validate_pw (p_customer_id IN NUMBER ,p_password IN VARCHAR2) RETURN BOOLEAN IS
+        l_salt customer.salt%TYPE;
+        l_stored_pw customer.password%TYPE;
+        l_email customer.email%TYPE;
+        l_generated_pw VARCHAR2(1000);
+    BEGIN
+        SELECT email,password,  salt
+        INTO l_email, l_stored_pw,l_salt
+        FROM customer
+        WHERE customer_id = p_customer_id;
+       
+        l_generated_pw := MANAGE_CUSTOMERS.check_pw_authenticity (l_email, p_password, l_salt);
 
-function confirm_password(
-    p_confirm_password in varchar2,
-    p_password in varchar2
-)
-return boolean
-is 
-begin 
-    if p_password = p_confirm_password then 
-        return true ;
-    else
-        return false ; 
-    end if;
-end confirm_password;
+        IF l_generated_pw = l_stored_pw THEN
+           RETURN TRUE;
+        END IF;
+        RETURN FALSE;
+    END;
 
-
-FUNCTION validate_discount (p_discount IN NUMBER) RETURN BOOLEAN 
-IS
-BEGIN
-    RETURN p_discount BETWEEN 0 AND 80;
-END;
-
-end "VALIDATIONS";
+END VALIDATIONS;
 /

@@ -1,36 +1,3 @@
-create or replace package "ADD_TO_WISHLIST" as
-
---------------------------------------------------------------
--- CHECK IF PRODUCT EXISTS IN WISHLIST TABLE
-FUNCTION check_existance(
-   p_product IN NUMBER,
-   p_customer in NUMBER
-   ) 
- RETURN NUMBER;
-
-
-    --------------------------------------------------------------
--- REMOVE PRODUCT STORED IN WISHLIST TABLE
-
-PROCEDURE remove_product (
-  p_product IN NUMBER,
-  p_customer in NUMBER
-);
-
-
---------------------------------------------------------------
--- ADD PRODUCT IN WISHLIST TABLE
-
-PROCEDURE add_product (
-    p_product IN NUMBER,
-    p_customer in NUMBER
-);
-
-
-end "ADD_TO_WISHLIST";
-/
-
-
 create or replace package body "ADD_TO_WISHLIST" as
 
     --------------------------------------------------
@@ -77,13 +44,13 @@ create or replace package body "ADD_TO_WISHLIST" as
         l_check_exsitance := check_existance(p_product, p_customer);
         
             IF l_check_exsitance = 0 THEN
-                INSERT INTO wishlist (wishlist_id, product_id, customer_id)
-                VALUES (wishlist_id_seq.nextval, p_product, p_customer); 
+                INSERT INTO wishlist (wishlist_id, product_id, customer_id, LAST_STOCK_STATUS, IS_NEW)
+                VALUES (wishlist_id_seq.nextval, p_product, p_customer, get_stock(p_product), 'Yes'); 
             ELSE
                 Remove_product(p_product, p_customer);
 
-                INSERT INTO wishlist (wishlist_id, product_id, customer_id)
-                VALUES (wishlist_id_seq.nextval, p_product, p_customer); 
+                INSERT INTO wishlist (wishlist_id, product_id, customer_id, LAST_STOCK_STATUS, IS_NEW)
+                VALUES (wishlist_id_seq.nextval, p_product, p_customer, get_stock(p_product), 'Yes'); 
             
         end if;
     END add_product;
